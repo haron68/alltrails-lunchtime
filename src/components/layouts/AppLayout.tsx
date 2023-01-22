@@ -9,7 +9,7 @@ type Props = {}
 const AppLayout: FC<Props> = () => {
   return (
     <>
-      <div className='relative bg-white'>
+      <div className='sticky top-0 bg-white'>
         <div
           className='pointer-events-none absolute inset-0 z-30 shadow'
           aria-hidden='true'
@@ -20,7 +20,7 @@ const AppLayout: FC<Props> = () => {
               <a href='/' className='flex'>
                 <span className='sr-only'>AllTrails</span>
                 <img
-                  className='h-auto w-44'
+                  className='h-auto w-56'
                   src='/logo-lunchtime.png'
                   alt='logo'
                 />
