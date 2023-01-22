@@ -3,13 +3,10 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  --tw-ring-color: #008d38;
-}
-
 body {
   margin: 0;
   font-family: Manrope, 'Helvetica Neue';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #efefec;
 }

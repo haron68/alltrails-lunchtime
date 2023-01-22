@@ -6,7 +6,7 @@ type Props = {}
 
 const NotFound: FC<Props> = () => {
   return (
-    <div className='min-h-full bg-white py-16 px-6 sm:py-24 md:grid md:place-items-center lg:px-8 mx-auto max-w-4xl'>
+    <div className='min-h-full py-16 px-6 sm:py-24 md:grid md:place-items-center lg:px-8 mx-auto max-w-4xl'>
       <main className='flex flex-col gap-4 justify-center align-center'>
         <p className='text-4xl font-bold tracking-tight text-muted-600 text-center'>
           404

@@ -87,18 +87,19 @@ const Theme: Partial<FlowbiteTheme> = {
     },
   },
   card: {
-    base: 'flex rounded-lg border border-gray-200 bg-white shadow-md',
-    children: 'flex h-full flex-col justify-center gap-4 p-6',
+    base: 'flex rounded-2xl border border-gray-200 bg-white shadow-xl',
+    children:
+      'flex h-full w-full flex-col justify-center gap-0.5 p-4 overflow-hidden whitespace-nowrap',
     horizontal: {
       off: 'flex-col',
-      on: 'flex-col md:max-w-xl md:flex-row',
+      on: 'flex-row',
     },
     href: 'hover:bg-gray-100',
     img: {
       base: '',
       horizontal: {
-        off: 'rounded-t-lg',
-        on: 'h-96 w-full rounded-t-lg object-cover md:h-auto md:w-48 md:rounded-none md:rounded-l-lg',
+        off: 'rounded-t-2xl',
+        on: 'h-20 w-24 object-cover my-4 ml-4',
       },
     },
   },
