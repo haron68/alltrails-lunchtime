@@ -2,17 +2,23 @@ import { FC, useState } from 'react'
 
 import ToggleMapListButton from '../components/buttons/ToggleMapListButton'
 import RestaurantCard from '../components/RestaurantCard'
+import MapView from '../components/views/Map/MapView'
+
 import classNames from 'classnames'
 
 type Props = {}
 
 const Home: FC<Props> = () => {
-  const [isMapView, setMapView] = useState(false)
+  const [isMapView, setMapView] = useState(true)
 
   return (
     <>
       <div className='min-h-full max-w-full py-5 px-6 sm:py-4 lg:px-8 grid grid-cols-6'>
-        <div className={classNames('sm:h-screen sm:overflow-y-auto flex flex-col col-span-6 sm:col-span-2 gap-6 pb-16 sm:p-4 sm:-m-4', isMapView ? 'hidden sm:flex' : '')}>
+        <div
+          className={classNames(
+            'z-10 sm:h-screen sm:overflow-y-auto flex flex-col col-span-6 sm:col-span-2 gap-6 pb-16 sm:p-4 sm:-m-4',
+            isMapView ? 'hidden sm:flex' : ''
+          )}>
           <RestaurantCard />
           <RestaurantCard />
           <RestaurantCard />
@@ -27,7 +33,13 @@ const Home: FC<Props> = () => {
           <RestaurantCard />
           <RestaurantCard />
         </div>
-        <div className={classNames('col-span-4', isMapView ? '' : 'hidden sm:flex')}></div>
+        <div
+          className={classNames(
+            'col-span-6 sm:col-span-4 h-screen -mx-6 -my-5 sm:-my-4 lg:-mx-8 sm:pl-12',
+            isMapView ? '' : 'hidden sm:block'
+          )}>
+          <MapView />
+        </div>
       </div>
       <ToggleMapListButton isMapView={isMapView} setMapView={setMapView} />
     </>
