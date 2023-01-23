@@ -1,5 +1,7 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 
+import NotFound from '../../../pages/NotFound'
+import CenteredSpinner from '../CenteredSpinner'
 import Map from './Map'
 
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
@@ -9,10 +11,10 @@ type Props = {}
 
 const MapView: FC<Props> = () => {
   const [clicks, setClicks] = useState<google.maps.LatLng[]>([])
-  const [zoom, setZoom] = useState(3) // initial zoom
+  const [zoom, setZoom] = useState(12) // initial zoom
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-    lat: 0,
-    lng: 0,
+    lat: 37.773972,
+    lng: -122.431297,
   })
 
   const onClick = (e: google.maps.MapMouseEvent) => {
@@ -23,10 +25,23 @@ const MapView: FC<Props> = () => {
   }
 
   const render = (status: Status) => {
-    console.log(status)
-    if (status == Status.FAILURE) return <p>FAILED</p>
-    return <Spinner size='lg' />
+    if (status == Status.FAILURE) return <NotFound statusCode={500} />
+    return <CenteredSpinner size='xl' />
   }
+
+  useEffect(() => {
+    // get user location otherwise we could check user IP address to approximate their location with IP -> Geo
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { coords } = position
+        const { latitude, longitude } = coords
+        setCenter({
+          lat: latitude,
+          lng: longitude,
+        })
+      })
+    }
+  }, [])
 
   return (
     <div className='flex h-full'>

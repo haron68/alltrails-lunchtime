@@ -6,7 +6,7 @@ type Props = {} & SpinnerProps
 
 const CenteredSpinner: FC<Props> = ({ ...props }) => {
   return (
-    <div className='flex h-full justify-center items-center'>
+    <div className='flex h-full w-full justify-center items-center'>
       <DefaultSpinner {...props} />
     </div>
   )

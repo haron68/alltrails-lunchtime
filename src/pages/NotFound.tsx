@@ -2,14 +2,16 @@ import { FC } from 'react'
 
 import { Button } from 'flowbite-react'
 
-type Props = {}
+type Props = {
+  statusCode?: number
+}
 
-const NotFound: FC<Props> = () => {
+const NotFound: FC<Props> = ({ statusCode = 404 }) => {
   return (
     <div className='min-h-full py-16 px-6 sm:py-24 md:grid md:place-items-center lg:px-8 mx-auto max-w-4xl'>
       <main className='flex flex-col gap-4 justify-center align-center'>
         <p className='text-4xl font-bold tracking-tight text-muted-600 text-center'>
-          404
+          {statusCode}
         </p>
         <h1 className='text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl text-center'>
           We've reached the end of the trail
