@@ -1,9 +1,11 @@
 import { FC, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 import ToggleMapListButton from '../../components/buttons/ToggleMapListButton'
-import RestaurantCard from '../../components/RestaurantCard'
 import CenteredSpinner from '../../components/views/CenteredSpinner'
 import MapView from '../../components/views/Map/MapView'
+import { selectAllResults, selectLoading } from '../../store/mapSlice'
+import { AppState } from '../../store/store'
 import './home.css'
 
 import classNames from 'classnames'
@@ -12,6 +14,16 @@ type Props = {}
 
 const Home: FC<Props> = () => {
   const [isMapView, setMapView] = useState(false)
+  const isLoading = useSelector<AppState, boolean>(selectLoading)
+  const results = useSelector<AppState, any[]>(selectAllResults)
+
+  const NoResults = () => {
+    return (
+      <div className='flex h-full w-full justify-center items-center text-center'>
+        <p className='text-gray-500'>No results found</p>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -21,7 +33,7 @@ const Home: FC<Props> = () => {
             'z-10 map-height sm:overflow-y-auto flex flex-col col-span-6 sm:col-span-2 gap-6 pb-16 sm:p-4 sm:-m-4',
             isMapView ? 'hidden sm:flex' : ''
           )}>
-          <CenteredSpinner size='xl' />
+          {isLoading ? <CenteredSpinner size='xl' /> : <></>}
           <div className='py-8 sm:hidden' />
         </div>
         <div

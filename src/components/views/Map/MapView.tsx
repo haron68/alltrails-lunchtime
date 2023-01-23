@@ -1,21 +1,21 @@
 import { FC, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import NotFound from '../../../pages/NotFound'
+import { selectCenter, setCenter } from '../../../store/mapSlice'
+import { AppState } from '../../../store/store'
 import CenteredSpinner from '../CenteredSpinner'
 import Map from './Map'
 
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
-import { Spinner } from 'flowbite-react'
 
 type Props = {}
 
 const MapView: FC<Props> = () => {
+  const dispatch = useDispatch()
   const [clicks, setClicks] = useState<google.maps.LatLng[]>([])
   const [zoom, setZoom] = useState(12) // initial zoom
-  const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-    lat: 37.773972,
-    lng: -122.431297,
-  })
+  const center = useSelector<AppState, google.maps.LatLngLiteral>(selectCenter)
 
   const onClick = (e: google.maps.MapMouseEvent) => {
     console.log(e)
@@ -35,10 +35,12 @@ const MapView: FC<Props> = () => {
       navigator.geolocation.getCurrentPosition((position) => {
         const { coords } = position
         const { latitude, longitude } = coords
-        setCenter({
-          lat: latitude,
-          lng: longitude,
-        })
+        dispatch(
+          setCenter({
+            lat: latitude,
+            lng: longitude,
+          })
+        )
       })
     }
   }, [])

@@ -17,7 +17,7 @@ const ToggleMapListButton: FC<Props> = ({
   className,
   ...props
 }) => {
-  const handleToggleView = () => setMapView(!isMapView)
+  const onToggleView = () => setMapView(!isMapView)
 
   const ToggleBtnContent = () =>
     isMapView ? (
@@ -35,7 +35,7 @@ const ToggleMapListButton: FC<Props> = ({
       <Button
         {...props}
         className={classNames('shadow-lg relative w-24 -ml-12', className)}
-        onClick={handleToggleView}>
+        onClick={onToggleView}>
         <ToggleBtnContent />
       </Button>
     </div>

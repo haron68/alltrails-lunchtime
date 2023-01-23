@@ -1,12 +1,21 @@
-import { FC } from 'react'
+import { ChangeEvent, FC } from 'react'
+import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router'
+
+import { searchRestaurants } from '../../store/mapSlice'
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import { TextInput } from 'flowbite-react'
+import { debounce } from 'lodash'
 
 type Props = {}
 
 const AppLayout: FC<Props> = () => {
+  const dispatch = useDispatch()
+  const onSearch = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    dispatch<any>(searchRestaurants(e.target.value))
+  }, 300)
+
   return (
     <>
       <div className='sticky top-0 bg-white z-50'>
@@ -18,7 +27,7 @@ const AppLayout: FC<Props> = () => {
           <div className='mx-auto flex flex-col gap-4 sm:flex-row max-w-full items-center justify-between py-5 px-6 sm:py-4 md:space-x-10 lg:px-8'>
             <div className='text-center sm:text-left'>
               <a href='/' className='flex'>
-                <span className='sr-only'>AllTrails</span>
+                <span className='sr-only'>AllTrails Lunchtime</span>
                 <img
                   className='h-auto w-56'
                   src='/logo-lunchtime.png'
@@ -31,6 +40,7 @@ const AppLayout: FC<Props> = () => {
                 sizing='sm'
                 icon={MagnifyingGlassIcon}
                 placeholder='Search restaurants'
+                onChange={onSearch}
               />
             </div>
           </div>
