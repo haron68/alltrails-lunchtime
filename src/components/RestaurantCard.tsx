@@ -1,8 +1,10 @@
 import { FC, useState } from 'react'
 
 import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline'
-import { StarIcon } from '@heroicons/react/24/solid'
-import { BookmarkIcon as BookmarkIconFilled } from '@heroicons/react/24/solid'
+import {
+  BookmarkIcon as BookmarkIconFilled,
+  StarIcon,
+} from '@heroicons/react/24/solid'
 import { Card } from 'flowbite-react'
 
 type Props = {
@@ -42,7 +44,13 @@ const RestaurantCard: FC<Props> = ({ isSaved = false }) => {
           <p className='font-normal text-gray-900'>4.8</p>
         </div>
         <div className='h-1 w-1 rounded-full bg-gray-700' />
-        <p className='font-normal text-gray-500'>15 reviews</p>
+        <p className='font-normal text-gray-500'>
+          (
+          {Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 0,
+          }).format(1500)}
+          )
+        </p>
       </div>
       <p className='font-normal text-gray-500 text-ellipsis'>
         Taco bell restaurant

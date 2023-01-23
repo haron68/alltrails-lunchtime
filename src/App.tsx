@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import Theme from './assets/flowbite-theme'
 import AppLayout from './components/layouts/AppLayout'
-import Home from './pages/Home'
+import Home from './pages/Home/Home'
 import NotFound from './pages/NotFound'
 
 import { Flowbite } from 'flowbite-react'
