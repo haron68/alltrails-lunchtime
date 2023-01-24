@@ -13,13 +13,19 @@ import {
 import useDeepCompareEffectForMaps from '../../../hooks/useDeepCompareEffectForMaps'
 
 type Props = {
-  style: { [key: string]: string }
+  className?: string
   onClick?: (e: google.maps.MapMouseEvent) => void
   onIdle?: (map: google.maps.Map) => void
   children?: ReactNode
 } & google.maps.MapOptions
 
-const Map: FC<Props> = ({ style, onClick, onIdle, children, ...options }) => {
+const Map: FC<Props> = ({
+  className,
+  onClick,
+  onIdle,
+  children,
+  ...options
+}) => {
   const ref = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<google.maps.Map>()
 
@@ -55,7 +61,7 @@ const Map: FC<Props> = ({ style, onClick, onIdle, children, ...options }) => {
 
   return (
     <>
-      <div ref={ref} style={style} />
+      <div ref={ref} className={className} />
       {Children.map(children, (child) => {
         if (isValidElement(child)) {
           // set the map prop on the child component

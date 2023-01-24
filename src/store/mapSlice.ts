@@ -17,7 +17,8 @@ export interface MapState {
     lat: number
     lng: number
   }
-  results: any[]
+  results: google.maps.places.PlaceResult[]
+  selectedLocation: google.maps.places.PlaceResult | undefined
 }
 
 const initialState: MapState = {
@@ -28,12 +29,15 @@ const initialState: MapState = {
     lng: -122.431297,
   },
   results: [],
+  selectedLocation: undefined,
 }
 
 export const selectLoading = (state: AppState) => state.map.isLoading
 export const selectSearchText = (state: AppState) => state.map.searchText
 export const selectCenter = (state: AppState) => state.map.center
 export const selectAllResults = (state: AppState) => state.map.results
+export const selectSelectedLocation = (state: AppState) =>
+  state.map.selectedLocation
 
 export const searchRestaurants = createAsyncThunk(
   'map/searchRestaurants',
@@ -51,11 +55,13 @@ export const searchRestaurants = createAsyncThunk(
 
     try {
       const response = await axios.get(url)
-
+      const { results } = response.data
+      dispatch(setResults(results))
       dispatch(setLoading(false))
       return response.data
     } catch (e) {
       console.error(e)
+      dispatch(setResults([]))
       dispatch(setLoading(false))
       return null
     }
@@ -78,13 +84,27 @@ export const mapSlice = createSlice({
     ) => {
       state.center = action.payload
     },
-    setResults: (state: Draft<MapState>, action: PayloadAction<any[]>) => {
+    setResults: (
+      state: Draft<MapState>,
+      action: PayloadAction<google.maps.places.PlaceResult[]>
+    ) => {
       state.results = action.payload
+    },
+    setSelectedLocation: (
+      state: Draft<MapState>,
+      action: PayloadAction<google.maps.places.PlaceResult>
+    ) => {
+      state.selectedLocation = action.payload
     },
   },
 })
 
-export const { setLoading, setSearchText, setCenter, setResults } =
-  mapSlice.actions
+export const {
+  setLoading,
+  setSearchText,
+  setCenter,
+  setResults,
+  setSelectedLocation,
+} = mapSlice.actions
 
 export default mapSlice.reducer

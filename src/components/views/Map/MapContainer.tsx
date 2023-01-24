@@ -2,26 +2,35 @@ import { FC, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import NotFound from '../../../pages/NotFound'
-import { selectCenter, setCenter } from '../../../store/mapSlice'
-import { AppState } from '../../../store/store'
+import {
+  selectAllResults,
+  selectCenter,
+  setCenter,
+  setSelectedLocation,
+} from '../../../store/mapSlice'
 import CenteredSpinner from '../CenteredSpinner'
 import Map from './Map'
+import Marker from './Marker'
 
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
 
 type Props = {}
 
-const MapView: FC<Props> = () => {
+const MapContainer: FC<Props> = () => {
   const dispatch = useDispatch()
   const [clicks, setClicks] = useState<google.maps.LatLng[]>([])
   const [zoom, setZoom] = useState(12) // initial zoom
-  const center = useSelector<AppState, google.maps.LatLngLiteral>(selectCenter)
+  const center = useSelector(selectCenter)
+  const results = useSelector(selectAllResults)
 
   const onClick = (e: google.maps.MapMouseEvent) => {
     console.log(e)
   }
   const onIdle = (map: google.maps.Map) => {
-    console.log(map)
+    const newCenter = map.getCenter()?.toJSON() as google.maps.LatLngLiteral
+    // reset center and zoom if user pans map
+    dispatch(setCenter(newCenter))
+    setZoom(map.getZoom() ?? 12)
   }
 
   const render = (status: Status) => {
@@ -45,6 +54,21 @@ const MapView: FC<Props> = () => {
     }
   }, [])
 
+  // preselect the first location in the results list
+  useEffect(() => {
+    if (results) {
+      const location = results[0]
+      const locCenter = location?.geometry?.location as
+        | google.maps.LatLngLiteral
+        | undefined
+
+      dispatch(setSelectedLocation(location))
+      if (locCenter) {
+        dispatch(setCenter(locCenter))
+      }
+    }
+  }, [results])
+
   return (
     <div className='flex h-full'>
       <Wrapper
@@ -55,11 +79,25 @@ const MapView: FC<Props> = () => {
           onClick={onClick}
           onIdle={onIdle}
           zoom={zoom}
-          style={{ flexGrow: '1', height: '100%' }}
-        />
+          styles={[
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{ visibility: 'off' }],
+            },
+          ]}
+          className='grow h-full'>
+          {results.map((place, i) => (
+            <Marker
+              key={i}
+              position={place.geometry?.location}
+              location={place}
+            />
+          ))}
+        </Map>
       </Wrapper>
     </div>
   )
 }
 
-export default MapView
+export default MapContainer

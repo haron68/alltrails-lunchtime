@@ -1,21 +1,11 @@
-import { ChangeEvent, FC } from 'react'
-import { useDispatch } from 'react-redux'
+import { FC } from 'react'
 import { Outlet } from 'react-router'
 
-import { searchRestaurants } from '../../store/mapSlice'
-
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { TextInput } from 'flowbite-react'
-import { debounce } from 'lodash'
+import SearchMapInput from '../inputs/SearchMapInput'
 
 type Props = {}
 
 const AppLayout: FC<Props> = () => {
-  const dispatch = useDispatch()
-  const onSearch = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    dispatch<any>(searchRestaurants(e.target.value))
-  }, 300)
-
   return (
     <>
       <div className='sticky top-0 bg-white z-50'>
@@ -36,12 +26,7 @@ const AppLayout: FC<Props> = () => {
               </a>
             </div>
             <div className='w-full sm:w-72'>
-              <TextInput
-                sizing='sm'
-                icon={MagnifyingGlassIcon}
-                placeholder='Search restaurants'
-                onChange={onSearch}
-              />
+              <SearchMapInput />
             </div>
           </div>
         </div>

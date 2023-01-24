@@ -99,7 +99,7 @@ const Theme: Partial<FlowbiteTheme> = {
       base: '',
       horizontal: {
         off: 'rounded-t-2xl',
-        on: 'h-20 w-24 object-cover my-4 ml-4',
+        on: 'h-20 w-20 object-none object-center my-4 ml-4',
       },
     },
   },
