@@ -26,14 +26,7 @@ const MapContainer: FC<Props> = () => {
     console.log(e)
   }
 
-  const onIdle = (map: google.maps.Map) => {
-    const newCenter = map.getCenter()?.toJSON() as google.maps.LatLngLiteral
-    console.log('center -> ', center)
-    console.log('new center -> ', newCenter)
-    // // reset center and zoom if user pans map
-    // dispatch(setCenter(newCenter))
-    // setZoom(map.getZoom() ?? 12)
-  }
+  const onIdle = (map: google.maps.Map) => {}
 
   const render = (status: Status) => {
     if (status == Status.FAILURE) return <NotFound statusCode={500} />

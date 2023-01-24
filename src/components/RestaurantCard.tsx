@@ -60,7 +60,7 @@ const RestaurantCard: FC<Props> = ({
       )}
       onClick={onClick}>
       <div className='w-full flex flex-row justify-between'>
-        <h5 className='text-lg font-bold tracking-tight text-gray-900 text-ellipsis overflow-hidden'>
+        <h5 className='text-lg font-bold tracking-tight text-gray-900 text-ellipsis overflow-hidden max-w-[80%]'>
           {name}
         </h5>
         {saved ? (

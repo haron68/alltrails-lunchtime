@@ -16,6 +16,7 @@ import {
 import './home.css'
 
 import classNames from 'classnames'
+import { Dispatch } from 'redux'
 
 type Props = {}
 
@@ -26,44 +27,6 @@ const Home: FC<Props> = () => {
   const searchText = useSelector(selectSearchText)
   const results = useSelector(selectAllResults)
   const selectedLocation = useSelector(selectSelectedLocation)
-
-  const renderRestaurantList = () => {
-    return (
-      <>
-        {results.map((place) => {
-          const photos = place.photos as any[]
-          const photoReference =
-            photos && photos.length > 0 ? photos[0].photo_reference : undefined
-          const isSelected = place.place_id == selectedLocation?.place_id
-          return (
-            <RestaurantCard
-              name={place.name}
-              rating={place.rating}
-              reviewCount={place.user_ratings_total}
-              address={place.formatted_address}
-              photoRef={photoReference}
-              isSelected={isSelected}
-              onClick={() => {
-                dispatch(setSelectedLocation(place))
-              }}
-            />
-          )
-        })}
-      </>
-    )
-  }
-
-  const renderNoResults = () => {
-    return (
-      <div className='flex h-full w-full justify-center items-center text-center'>
-        <p className='text-gray-500'>
-          {searchText.length == 0
-            ? Strings.SEARCH_FOR_RESTAURANTS
-            : Strings.NO_RESULTS_FOUND}
-        </p>
-      </div>
-    )
-  }
 
   return (
     <>
@@ -76,9 +39,13 @@ const Home: FC<Props> = () => {
           {isLoading ? (
             <CenteredSpinner size='xl' />
           ) : results && results.length > 0 ? (
-            renderRestaurantList()
+            <RestaurantList
+              dispatch={dispatch}
+              results={results}
+              selectedLocation={selectedLocation}
+            />
           ) : (
-            renderNoResults()
+            <NoResults searchText={searchText} />
           )}
           <div className='py-8 sm:hidden' />
         </div>
@@ -92,6 +59,58 @@ const Home: FC<Props> = () => {
       </div>
       <ToggleMapListButton isMapView={isMapView} setMapView={setMapView} />
     </>
+  )
+}
+
+type RestaurantListProps = {
+  dispatch: Dispatch
+  results: google.maps.places.PlaceResult[]
+  selectedLocation?: google.maps.places.PlaceResult
+}
+
+const RestaurantList: FC<RestaurantListProps> = ({
+  dispatch,
+  results,
+  selectedLocation,
+}) => {
+  return (
+    <>
+      {results.map((place) => {
+        const photos = place.photos as any[]
+        const photoReference =
+          photos && photos.length > 0 ? photos[0].photo_reference : undefined
+        const isSelected = place.place_id == selectedLocation?.place_id
+        return (
+          <RestaurantCard
+            name={place.name}
+            rating={place.rating}
+            reviewCount={place.user_ratings_total}
+            address={place.formatted_address}
+            photoRef={photoReference}
+            isSelected={isSelected}
+            onClick={() => {
+              dispatch(setSelectedLocation(place))
+            }}
+          />
+        )
+      })}
+    </>
+  )
+}
+
+type NoResultsProps = {
+  searchText: string
+}
+
+const NoResults: FC<NoResultsProps> = ({ searchText }) => {
+  return (
+    <div className='flex h-full w-full justify-center items-center text-center'>
+      <p className='text-gray-500'>
+        {searchText.length == 0
+          ? Strings.SEARCH_FOR_RESTAURANTS
+          : Strings.NO_RESULTS_FOUND}
+      </p>
+    </div>
   )
 }
 
