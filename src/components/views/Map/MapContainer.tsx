@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import NotFound from '../../../pages/NotFound'
@@ -18,7 +18,6 @@ type Props = {}
 
 const MapContainer: FC<Props> = () => {
   const dispatch = useDispatch()
-  const [clicks, setClicks] = useState<google.maps.LatLng[]>([])
   const [zoom, setZoom] = useState(12) // initial zoom
   const center = useSelector(selectCenter)
   const results = useSelector(selectAllResults)
@@ -29,9 +28,11 @@ const MapContainer: FC<Props> = () => {
 
   const onIdle = (map: google.maps.Map) => {
     const newCenter = map.getCenter()?.toJSON() as google.maps.LatLngLiteral
-    // reset center and zoom if user pans map
-    dispatch(setCenter(newCenter))
-    setZoom(map.getZoom() ?? 12)
+    console.log('center -> ', center)
+    console.log('new center -> ', newCenter)
+    // // reset center and zoom if user pans map
+    // dispatch(setCenter(newCenter))
+    // setZoom(map.getZoom() ?? 12)
   }
 
   const render = (status: Status) => {
