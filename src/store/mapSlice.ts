@@ -43,9 +43,8 @@ export const searchRestaurants = createAsyncThunk(
     console.log(searchText)
     dispatch(setLoading(true))
     const { lat, lng } = state.map.center
-    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY
     const url = encodeURI(
-      `${process.env.REACT_APP_GOOGLE_MAPS_SEARCH_API_URI}/textsearch/json?location=${lat},${lng}&query=${searchText}&radius=10000&key=${apiKey}`
+      `${process.env.REACT_APP_SEARCH_API_URI}?query=${searchText}&lat=${lat}&lng=${lng}`
     )
 
     console.log(url)
