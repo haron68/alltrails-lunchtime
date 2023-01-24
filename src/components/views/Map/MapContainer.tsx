@@ -3,8 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import NotFound from '../../../pages/NotFound'
 import {
+  removeSavedLocation,
+  saveLocation,
   selectAllResults,
   selectCenter,
+  selectSavedLocations,
   setCenter,
   setSelectedLocation,
 } from '../../../store/mapSlice'
@@ -21,12 +24,21 @@ const MapContainer: FC<Props> = () => {
   const [zoom, setZoom] = useState(12) // initial zoom
   const center = useSelector(selectCenter)
   const results = useSelector(selectAllResults)
+  const savedLocations = useSelector(selectSavedLocations)
 
-  const onClick = (e: google.maps.MapMouseEvent) => {
-    console.log(e)
+  const toggleSave = (ev: any) => {
+    const index = ev.detail
+    const location = results[index]
+    const { place_id: placeId } = location
+    if (placeId) {
+      const isSaved = placeId in savedLocations
+      if (!isSaved) {
+        dispatch(saveLocation(location))
+      } else {
+        dispatch(removeSavedLocation(placeId))
+      }
+    }
   }
-
-  const onIdle = (map: google.maps.Map) => {}
 
   const render = (status: Status) => {
     if (status == Status.FAILURE) return <NotFound statusCode={500} />
@@ -64,6 +76,16 @@ const MapContainer: FC<Props> = () => {
     }
   }, [results])
 
+  useEffect(() => {
+    // listen to location save events from the map
+    document.addEventListener('toggleSave', toggleSave)
+
+    // remove event on unmount
+    return () => {
+      document.removeEventListener('toggleSave', toggleSave)
+    }
+  }, [results, savedLocations])
+
   return (
     <div className='flex h-full'>
       <Wrapper
@@ -71,8 +93,6 @@ const MapContainer: FC<Props> = () => {
         render={render}>
         <Map
           center={center}
-          onClick={onClick}
-          onIdle={onIdle}
           zoom={zoom}
           styles={[
             {
@@ -85,6 +105,7 @@ const MapContainer: FC<Props> = () => {
           {results.map((place, i) => (
             <Marker
               key={i}
+              index={i}
               position={place.geometry?.location}
               location={place}
             />

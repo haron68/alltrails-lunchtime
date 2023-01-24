@@ -7,8 +7,10 @@ import CenteredSpinner from '../../components/views/CenteredSpinner'
 import MapContainer from '../../components/views/Map/MapContainer'
 import { Strings } from '../../constants/strings'
 import {
+  SavedLocations,
   selectAllResults,
   selectLoading,
+  selectSavedLocations,
   selectSearchText,
   selectSelectedLocation,
   setSelectedLocation,
@@ -27,6 +29,7 @@ const Home: FC<Props> = () => {
   const searchText = useSelector(selectSearchText)
   const results = useSelector(selectAllResults)
   const selectedLocation = useSelector(selectSelectedLocation)
+  const savedLocations = useSelector(selectSavedLocations)
 
   return (
     <>
@@ -43,6 +46,7 @@ const Home: FC<Props> = () => {
               dispatch={dispatch}
               results={results}
               selectedLocation={selectedLocation}
+              savedLocations={savedLocations}
             />
           ) : (
             <NoResults searchText={searchText} />
@@ -57,7 +61,11 @@ const Home: FC<Props> = () => {
           <MapContainer />
         </div>
       </div>
-      <ToggleMapListButton isMapView={isMapView} setMapView={setMapView} />
+      <ToggleMapListButton
+        isMapView={isMapView}
+        isLoading={isLoading}
+        setMapView={setMapView}
+      />
     </>
   )
 }
@@ -66,27 +74,27 @@ type RestaurantListProps = {
   dispatch: Dispatch
   results: google.maps.places.PlaceResult[]
   selectedLocation?: google.maps.places.PlaceResult
+  savedLocations?: SavedLocations
 }
 
 const RestaurantList: FC<RestaurantListProps> = ({
   dispatch,
   results,
   selectedLocation,
+  savedLocations = {},
 }) => {
   return (
     <>
-      {results.map((place) => {
-        const photos = place.photos as any[]
-        const photoReference =
-          photos && photos.length > 0 ? photos[0].photo_reference : undefined
+      {results.map((place, i) => {
         const isSelected = place.place_id == selectedLocation?.place_id
+        const isSaved = place.place_id
+          ? place.place_id in savedLocations
+          : false
         return (
           <RestaurantCard
-            name={place.name}
-            rating={place.rating}
-            reviewCount={place.user_ratings_total}
-            address={place.formatted_address}
-            photoRef={photoReference}
+            key={i}
+            location={place}
+            isSaved={isSaved}
             isSelected={isSelected}
             onClick={() => {
               dispatch(setSelectedLocation(place))

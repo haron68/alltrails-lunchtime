@@ -1,5 +1,3 @@
-import { useDispatch, useSelector } from 'react-redux'
-
 import { AppState } from './store'
 
 import {
@@ -10,6 +8,10 @@ import {
 } from '@reduxjs/toolkit'
 import axios from 'axios'
 
+export type SavedLocations = {
+  [place_id: string]: google.maps.places.PlaceResult
+}
+
 export interface MapState {
   isLoading: boolean
   searchText: string
@@ -19,6 +21,7 @@ export interface MapState {
   }
   results: google.maps.places.PlaceResult[]
   selectedLocation: google.maps.places.PlaceResult | undefined
+  savedLocations: SavedLocations
 }
 
 const initialState: MapState = {
@@ -30,6 +33,7 @@ const initialState: MapState = {
   },
   results: [],
   selectedLocation: undefined,
+  savedLocations: {},
 }
 
 export const selectLoading = (state: AppState) => state.map.isLoading
@@ -38,6 +42,8 @@ export const selectCenter = (state: AppState) => state.map.center
 export const selectAllResults = (state: AppState) => state.map.results
 export const selectSelectedLocation = (state: AppState) =>
   state.map.selectedLocation
+export const selectSavedLocations = (state: AppState) =>
+  state.map.savedLocations
 
 export const searchRestaurants = createAsyncThunk(
   'map/searchRestaurants',
@@ -96,6 +102,26 @@ export const mapSlice = createSlice({
     ) => {
       state.selectedLocation = action.payload
     },
+    saveLocation: (
+      state: Draft<MapState>,
+      action: PayloadAction<google.maps.places.PlaceResult>
+    ) => {
+      const location = action.payload
+      if (!location.place_id) {
+        return
+      }
+      state.savedLocations[location.place_id] = location
+    },
+    removeSavedLocation: (
+      state: Draft<MapState>,
+      action: PayloadAction<string | undefined>
+    ) => {
+      const placeId = action.payload
+      if (!placeId) {
+        return
+      }
+      delete state.savedLocations[placeId]
+    },
   },
 })
 
@@ -105,6 +131,8 @@ export const {
   setCenter,
   setResults,
   setSelectedLocation,
+  saveLocation,
+  removeSavedLocation,
 } = mapSlice.actions
 
 export default mapSlice.reducer
