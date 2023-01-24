@@ -11,6 +11,7 @@ import {
 } from 'react'
 
 import useDeepCompareEffectForMaps from '../../../hooks/useDeepCompareEffectForMaps'
+import './map.css'
 
 type Props = {
   className?: string
@@ -28,6 +29,7 @@ const Map: FC<Props> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [map, setMap] = useState<google.maps.Map>()
+  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>()
 
   useEffect(() => {
     if (ref.current && !map) {
@@ -40,6 +42,8 @@ const Map: FC<Props> = ({
   useDeepCompareEffectForMaps(() => {
     if (map) {
       map.setOptions(options)
+      infoWindow?.close()
+      setInfoWindow(new google.maps.InfoWindow())
     }
   }, [map, options])
 
@@ -66,7 +70,7 @@ const Map: FC<Props> = ({
         if (isValidElement(child)) {
           // set the map prop on the child component
           // @ts-ignore
-          return cloneElement(child, { map })
+          return cloneElement(child, { map, infoWindow })
         }
       })}
     </>

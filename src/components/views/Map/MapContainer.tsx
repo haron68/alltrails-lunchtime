@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import NotFound from '../../../pages/NotFound'
@@ -26,6 +26,7 @@ const MapContainer: FC<Props> = () => {
   const onClick = (e: google.maps.MapMouseEvent) => {
     console.log(e)
   }
+
   const onIdle = (map: google.maps.Map) => {
     const newCenter = map.getCenter()?.toJSON() as google.maps.LatLngLiteral
     // reset center and zoom if user pans map

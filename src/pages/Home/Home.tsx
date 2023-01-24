@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import ToggleMapListButton from '../../components/buttons/ToggleMapListButton'
 import RestaurantCard from '../../components/RestaurantCard'
@@ -10,6 +10,8 @@ import {
   selectAllResults,
   selectLoading,
   selectSearchText,
+  selectSelectedLocation,
+  setSelectedLocation,
 } from '../../store/mapSlice'
 import './home.css'
 
@@ -18,18 +20,21 @@ import classNames from 'classnames'
 type Props = {}
 
 const Home: FC<Props> = () => {
+  const dispatch = useDispatch()
   const [isMapView, setMapView] = useState(false)
   const isLoading = useSelector(selectLoading)
   const searchText = useSelector(selectSearchText)
   const results = useSelector(selectAllResults)
+  const selectedLocation = useSelector(selectSelectedLocation)
 
-  const RestaurantList = () => {
+  const renderRestaurantList = () => {
     return (
       <>
         {results.map((place) => {
           const photos = place.photos as any[]
           const photoReference =
             photos && photos.length > 0 ? photos[0].photo_reference : undefined
+          const isSelected = place.place_id == selectedLocation?.place_id
           return (
             <RestaurantCard
               name={place.name}
@@ -37,6 +42,10 @@ const Home: FC<Props> = () => {
               reviewCount={place.user_ratings_total}
               address={place.formatted_address}
               photoRef={photoReference}
+              isSelected={isSelected}
+              onClick={() => {
+                dispatch(setSelectedLocation(place))
+              }}
             />
           )
         })}
@@ -44,7 +53,7 @@ const Home: FC<Props> = () => {
     )
   }
 
-  const NoResults = () => {
+  const renderNoResults = () => {
     return (
       <div className='flex h-full w-full justify-center items-center text-center'>
         <p className='text-gray-500'>
@@ -67,9 +76,9 @@ const Home: FC<Props> = () => {
           {isLoading ? (
             <CenteredSpinner size='xl' />
           ) : results && results.length > 0 ? (
-            <RestaurantList />
+            renderRestaurantList()
           ) : (
-            <NoResults />
+            renderNoResults()
           )}
           <div className='py-8 sm:hidden' />
         </div>

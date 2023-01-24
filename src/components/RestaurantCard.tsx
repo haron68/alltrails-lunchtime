@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, MouseEventHandler, useEffect, useState } from 'react'
 
 import { BookmarkIcon as BookmarkIconOutline } from '@heroicons/react/24/outline'
 import {
   BookmarkIcon as BookmarkIconFilled,
   StarIcon,
 } from '@heroicons/react/24/solid'
+import classNames from 'classnames'
 import { Card } from 'flowbite-react'
 
 type Props = {
@@ -13,7 +14,10 @@ type Props = {
   reviewCount?: number
   address?: string
   isSaved?: boolean
+  isSelected?: boolean
   photoRef?: string
+  onClick?: MouseEventHandler<HTMLDivElement>
+  className?: string | undefined
 }
 
 const RestaurantCard: FC<Props> = ({
@@ -22,12 +26,16 @@ const RestaurantCard: FC<Props> = ({
   reviewCount,
   address,
   isSaved = false,
+  isSelected = false,
   photoRef,
+  onClick,
+  className,
 }) => {
   const [saved, setSaved] = useState(isSaved)
   const [imgSrc, setImgSrc] = useState<string>()
 
-  const toggleSave = () => {
+  const toggleSave = (event: any) => {
+    event.stopPropagation()
     setSaved(!saved)
   }
 
@@ -42,7 +50,15 @@ const RestaurantCard: FC<Props> = ({
   }, [photoRef])
 
   return (
-    <Card horizontal={true} imgSrc={imgSrc}>
+    <Card
+      horizontal={true}
+      imgSrc={imgSrc}
+      className={classNames(
+        isSelected ? 'border border-2 border-primary-700' : '',
+        onClick ? 'cursor-pointer' : '',
+        className
+      )}
+      onClick={onClick}>
       <div className='w-full flex flex-row justify-between'>
         <h5 className='text-lg font-bold tracking-tight text-gray-900 text-ellipsis overflow-hidden'>
           {name}
