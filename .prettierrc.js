@@ -20,6 +20,7 @@ module.exports = {
     '^@services/(.*)$',
     '^@store/(.*)$',
     '^[./]',
+    '(.*)$'
   ],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
