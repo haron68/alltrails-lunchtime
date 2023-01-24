@@ -36,8 +36,9 @@ const RestaurantCard: FC<Props> = ({
     formatted_address: address,
     photos,
   } = location
-  // @ts-ignore
+
   const photoReference =
+    // @ts-ignore
     photos && photos.length > 0 ? photos[0].photo_reference : undefined
 
   const toggleSave = (ev: any) => {

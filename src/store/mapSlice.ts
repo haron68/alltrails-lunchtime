@@ -1,3 +1,4 @@
+import { DatabaseKeys } from '../constants/strings'
 import { AppState } from './store'
 
 import {
@@ -33,7 +34,9 @@ const initialState: MapState = {
   },
   results: [],
   selectedLocation: undefined,
-  savedLocations: {},
+  savedLocations: JSON.parse(
+    localStorage.getItem(DatabaseKeys.SAVED_LOCATIONS) ?? '{}'
+  ),
 }
 
 export const selectLoading = (state: AppState) => state.map.isLoading
@@ -111,6 +114,12 @@ export const mapSlice = createSlice({
         return
       }
       state.savedLocations[location.place_id] = location
+
+      // persist updated saved locations
+      localStorage.setItem(
+        DatabaseKeys.SAVED_LOCATIONS,
+        JSON.stringify(state.savedLocations)
+      )
     },
     removeSavedLocation: (
       state: Draft<MapState>,
@@ -121,6 +130,12 @@ export const mapSlice = createSlice({
         return
       }
       delete state.savedLocations[placeId]
+
+      // persist updated saved locations
+      localStorage.setItem(
+        DatabaseKeys.SAVED_LOCATIONS,
+        JSON.stringify(state.savedLocations)
+      )
     },
   },
 })
