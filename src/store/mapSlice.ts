@@ -53,14 +53,12 @@ export const searchRestaurants = createAsyncThunk(
   async (searchText: string, thunk) => {
     const { dispatch, getState } = thunk
     const state = getState() as AppState
-    console.log(searchText)
+
     dispatch(setLoading(true))
     const { lat, lng } = state.map.center
     const url = encodeURI(
       `${process.env.REACT_APP_SEARCH_API_URI}?query=${searchText}&lat=${lat}&lng=${lng}`
     )
-
-    console.log(url)
 
     try {
       const response = await axios.get(url)
