@@ -20,6 +20,10 @@ export interface MapState {
     lat: number
     lng: number
   }
+  cameraCenter: {
+    lat: number
+    lng: number
+  }
   results: google.maps.places.PlaceResult[]
   selectedLocation: google.maps.places.PlaceResult | undefined
   savedLocations: SavedLocations
@@ -29,6 +33,10 @@ const initialState: MapState = {
   isLoading: false,
   searchText: '',
   center: {
+    lat: 37.773972,
+    lng: -122.431297,
+  },
+  cameraCenter: {
     lat: 37.773972,
     lng: -122.431297,
   },
@@ -42,6 +50,7 @@ const initialState: MapState = {
 export const selectLoading = (state: AppState) => state.map.isLoading
 export const selectSearchText = (state: AppState) => state.map.searchText
 export const selectCenter = (state: AppState) => state.map.center
+export const selectCameraCenter = (state: AppState) => state.map.cameraCenter
 export const selectAllResults = (state: AppState) => state.map.results
 export const selectSelectedLocation = (state: AppState) =>
   state.map.selectedLocation
@@ -54,8 +63,11 @@ export const searchRestaurants = createAsyncThunk(
     const { dispatch, getState } = thunk
     const state = getState() as AppState
 
+    // clear results before query to avoid map whiplash bug
+    dispatch(setResults([]))
+
     dispatch(setLoading(true))
-    const { lat, lng } = state.map.center
+    const { lat, lng } = state.map.cameraCenter
     const url = encodeURI(
       `${process.env.REACT_APP_SEARCH_API_URI}?query=${searchText}&lat=${lat}&lng=${lng}`
     )
@@ -90,6 +102,13 @@ export const mapSlice = createSlice({
       action: PayloadAction<google.maps.LatLngLiteral>
     ) => {
       state.center = action.payload
+      state.cameraCenter = action.payload
+    },
+    setCameraCenter: (
+      state: Draft<MapState>,
+      action: PayloadAction<google.maps.LatLngLiteral>
+    ) => {
+      state.cameraCenter = action.payload
     },
     setResults: (
       state: Draft<MapState>,
@@ -142,6 +161,7 @@ export const {
   setLoading,
   setSearchText,
   setCenter,
+  setCameraCenter,
   setResults,
   setSelectedLocation,
   saveLocation,

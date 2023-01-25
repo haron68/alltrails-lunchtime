@@ -8,6 +8,7 @@ import {
   selectAllResults,
   selectCenter,
   selectSavedLocations,
+  setCameraCenter,
   setCenter,
   setSelectedLocation,
 } from '../../../store/mapSlice'
@@ -21,10 +22,15 @@ type Props = {}
 
 const MapContainer: FC<Props> = () => {
   const dispatch = useDispatch()
-  const [zoom, setZoom] = useState(12) // initial zoom
+  const [zoom] = useState(12) // initial zoom
   const center = useSelector(selectCenter)
   const results = useSelector(selectAllResults)
   const savedLocations = useSelector(selectSavedLocations)
+
+  const onIdle = (map: google.maps.Map) => {
+    const cnt = map.getCenter()?.toJSON() as google.maps.LatLngLiteral
+    dispatch(setCameraCenter(cnt))
+  }
 
   const toggleSave = (ev: any) => {
     const index = ev.detail
@@ -101,6 +107,7 @@ const MapContainer: FC<Props> = () => {
               stylers: [{ visibility: 'off' }],
             },
           ]}
+          onIdle={onIdle}
           className='grow h-full'>
           {results.map((place, i) => (
             <Marker

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react'
+import { ChangeEvent, FC, KeyboardEvent } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { searchRestaurants, setSearchText } from '../../store/mapSlice'
@@ -11,18 +11,32 @@ type Props = {}
 
 const SearchMapInput: FC<Props> = () => {
   const dispatch = useDispatch()
-  const onSearch = debounce((e: ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
+
+  const search = (val: string) => {
     dispatch<any>(searchRestaurants(val))
     dispatch(setSearchText(val))
+  }
+
+  const onChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    search(val)
   }, 300)
+
+  const onEnterPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.code == 'Enter') {
+      // @ts-ignore
+      const val = e.target.value
+      search(val)
+    }
+  }
 
   return (
     <TextInput
       sizing='sm'
       icon={MagnifyingGlassIcon}
       placeholder='Search restaurants'
-      onChange={onSearch}
+      onChange={onChange}
+      onKeyDown={onEnterPress}
     />
   )
 }
